@@ -16,7 +16,7 @@ Servers/
 /target/
 /bin/
 .springBeans
-# MapperConfig.xml
+mybatis-config.xml
 /toySpring/target/
 
 
