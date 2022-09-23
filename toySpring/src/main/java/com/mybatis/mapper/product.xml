@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.product">
+
+	<!--  전체 상품페이지(홈페이지) 쿼리  -->
+	<select id="productList" resultType="com.vo.ProductVO">
+		SELECT * FROM PRODUCT ORDER BY product_no asc
+	</select>
+	<!--  전체 상품페이지(홈페이지) 쿼리  -->
+	
+	<!-- 디테일 상품페이지 쿼리 -->
+	<select id="getProduct" parameterType="map" resultType="map">
+		SELECT * FROM PRODUCT WHERE product_no = #{product_no}
+	</select>
+	
+	<select id="getRelatedProducts" parameterType="map" resultType="map">
+ 		select * from (
+			select * from PRODUCT 
+			where product_category = #{product_category}
+			and product_no != #{product_no}
+			order by product_like desc
+			)
+		where rownum <![CDATA[<=]]> 4 
+	</select>
+	
+	<select id="getReviewList" parameterType="map" resultType="map">
+		SELECT * FROM PRODUCT_REVIEW, (SELECT ROUND(AVG(NVL(review_score, 0)),1) as review_avg from PRODUCT_REVIEW)
+		WHERE PRODUCT_NO = #{product_no}
+	</select>
+	<!-- 디테일 상품페이지 쿼리 -->
+	
+	<!-- 검색 쿼리 (수정필요) -->
+	<select id="Searchproduct" parameterType="map" resultType="com.vo.ProductVO">
+		SELECT * FROM PRODUCT
+		WHERE PRODUCT_NAME LIKE '%'||#{search}||'%'
+	</select>
+	<!-- 검색 쿼리 (수정필요) -->
+	
+	<!-- Product 공통 쿼리 좋아요 리스트 -->
+	<select id="likeList" parameterType="map" resultType="Integer">
+		SELECT PRODUCT_NO FROM PRODUCT_LIKE 
+		WHERE MEMBER_ID = #{member_id}
+		ORDER BY PRODUCT_NO asc
+	</select>
+	<!-- Product 공통 쿼리 좋아요 리스트 -->
+	
+	<!-- 좋아요 추가 -->
+	<update id="likeUpdate" parameterType="map">
+		UPDATE PRODUCT
+		SET product_like = product_like + 1
+		WHERE product_no = #{product_no}
+	</update>
+	
+	<update id="MemberLikeUpdate" parameterType="map">
+		INSERT INTO PRODUCT_LIKE (MEMBER_ID, PRODUCT_NO) VALUES (#{member_id}, #{product_no})
+	</update>
+	<!-- 좋아요 추가 -->
+	
+	<!-- 좋아요 삭제 -->
+	<delete id="likeDelete">
+		UPDATE PRODUCT
+		SET product_like = product_like - 1
+		WHERE product_no = #{product_no}
+	</delete>
+	<delete id="MemberLikeDelete">
+		DELETE PRODUCT_LIKE
+		WHERE MEMBER_ID = #{member_id}
+		AND PRODUCT_NO = #{product_no}
+	</delete>
+	<!-- 좋아요 삭제 -->
+	
+	<!-- 리뷰 추가 -->
+	<update id="InsertReviewCount" parameterType="map">
+		UPDATE PRODUCT
+		SET PRODUCT_REVIEWCOUNT = PRODUCT_REVIEWCOUNT + 1
+		WHERE product_no = #{product_no}
+	</update>
+
+	<insert id="InsertReview" parameterType="map">
+		INSERT INTO PRODUCT_REVIEW (MEMBER_ID, PRODUCT_NO, REVIEW_CONTENT, REVIEW_SCORE, REVIEW_IMG, REVIEW_DATE)
+		VALUES(
+		    #{member_id},
+		    #{product_no},
+		    #{review_content},
+		    #{review_score},
+		    #{review_img, jdbcType=VARCHAR},
+		    #{review_date}
+		)
+	</insert>
+	<!-- 리뷰 추가 -->
+</mapper>

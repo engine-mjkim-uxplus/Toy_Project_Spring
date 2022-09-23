@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.member">  <!-- 쿼리 id = namespace + id -->
+
+	<select id="getMember" parameterType="map" resultType="com.vo.MemberVO">
+		SELECT * FROM MEMBER WHERE MEMBER_ID = #{id}
+	</select>
+	
+	<select id="getOrderList" parameterType="map" resultType="map">
+		SELECT b.order_number, b.order_date, b.order_name, b.order_address, b.order_address2,b.order_zipcode, b.order_phone, b.order_memo,
+		a.product_name, a.product_img, b.order_count, b.order_price, b.buystate, a.product_no
+		FROM PRODUCT a , SHOPPING_ORDER b
+		where member_id = #{member_id}
+		and a.product_no = b.product_no
+		<if test="date != null">
+			and b.order_date BETWEEN TO_DATE(#{date}, 'YYYY-MM-DD') 
+	                   			 AND SYSDATE
+		</if>
+		<if test="today != null">
+			and b.order_date = #{today}
+		</if>
+		order by b.order_date desc
+	</select>
+	
+	<update id="memberUpdateP" parameterType="map">
+		UPDATE MEMBER
+		   SET member_pw = #{member_pw}
+		      ,member_name = #{member_name}
+		      ,member_phone = #{member_phone}
+		      ,member_zipcode = #{member_zipcode}
+		      ,member_address = #{member_address}
+		      ,member_address2 = #{member_address2}
+		      ,member_gender = #{member_gender}
+		 WHERE member_id = #{member_id}
+	</update>
+
+	<!-- [[ 회원 탈퇴할 때 무결성 제약조건 방지용 시작 ]] -->	
+	<select id="getCart" parameterType="map" resultType="com.vo.CartVO">
+		SELECT * FROM cart
+		 WHERE member_id = #{member_id}
+	</select>
+	
+	<delete id="delCart" parameterType="map">
+		DELETE FROM cart
+		 WHERE member_id = #{member_id}
+	</delete>
+	<select id="getLike" parameterType="map" resultType="com.vo.ProductVO">
+		SELECT * FROM product_like
+		 WHERE member_id = #{member_id}
+	</select>
+	
+	<delete id="delLike" parameterType="map">
+		DELETE FROM product_like
+		 WHERE member_id = #{member_id}
+	</delete>
+	<select id="getReview" parameterType="map" resultType="com.vo.ProductReviewVO">
+		SELECT * FROM product_review
+		 WHERE member_id = #{member_id}
+	</select>
+	
+	<delete id="delReview" parameterType="map">
+		DELETE FROM product_review
+		 WHERE member_id = #{member_id}
+	</delete>
+	<select id="getCoupon" parameterType="map" resultType="map">
+		SELECT * FROM coupon_zip
+		 WHERE member_id = #{member_id}
+	</select>
+	
+	<delete id="delCoupon" parameterType="map">
+		DELETE FROM coupon_zip
+		 WHERE member_id = #{member_id}
+	</delete>
+	<select id="getOrder" parameterType="map" resultType="map">
+		SELECT * FROM shopping_order
+		 WHERE member_id = #{member_id}
+	</select>
+	
+	<delete id="delOrder" parameterType="map">
+		DELETE FROM shopping_order
+		 WHERE member_id = #{member_id}
+	</delete>
+	<!-- [[ 회원 탈퇴할 때 무결성 제약조건 방지용 끝 ]] -->	
+	
+	<delete id="memberDelete" parameterType="map">
+		DELETE FROM MEMBER
+		 WHERE member_id = #{member_id} and member_pw = #{member_pw}
+	</delete>
+	
+	<!-- 좋아요 누른 상품 가져오기 -->
+	<select id="memberListLike" parameterType="String" resultType="com.vo.ProductVO">
+		SELECT P.PRODUCT_CATEGORY,P.PRODUCT_NAME
+              ,P.PRODUCT_PRICE,P.PRODUCT_IMG,P.PRODUCT_NO
+          FROM PRODUCT P , 
+              (
+               SELECT PRODUCT_NO FROM PRODUCT_LIKE 
+                WHERE MEMBER_ID= #{member_id}
+               ) C
+         WHERE P.PRODUCT_NO = C.PRODUCT_NO
+	</select>
+	<!-- 구매내역 가져오기 -->
+	<select id="memberListReview" parameterType="String" resultType="map">
+	SELECT P.PRODUCT_NAME,P.PRODUCT_IMG,P.PRODUCT_NO
+	      ,R.MEMBER_ID, R.REVIEW_CONTENT, R.REVIEW_SCORE, R.REVIEW_IMG, R.REVIEW_DATE
+	  FROM PRODUCT P , PRODUCT_REVIEW  R
+	 WHERE P.PRODUCT_NO = R.PRODUCT_NO and MEMBER_ID= #{member_id}
+	</select>
+	<!-- 쿠폰내역 가져오기 -->
+	<select id="memberListCoupon" parameterType="String" resultType="com.vo.CouponVO">
+		SELECT C.COUPON_NO, C.COUPON_NAME, C.COUPON_DATE, C.COUPON_TEXT, C.COUPON_PRICE
+		  FROM COUPON C,
+		       (SELECT COUPON_NO FROM COUPON_ZIP
+		         WHERE member_id = #{member_id}) Z
+		 WHERE C.COUPON_NO = Z.COUPON_NO
+	</select>
+	<!-- 쿠폰 등록하기 -->
+	<insert id="memberInsertCoupon" parameterType="map">
+		INSERT INTO COUPON_ZIP (member_id, coupon_no)
+		VALUES (#{member_id}, #{coupon_no})
+	</insert>
+	<!-- 쿠폰 중복 등록 검사하기 -->
+	<select id="isCoupon" parameterType="String" resultType="Integer">
+		SELECT COUPON_NO FROM COUPON_ZIP
+		 WHERE member_id = #{member_id}
+	</select>
+	
+	<update id="memberUpdateCoupon" parameterType="String" >
+		UPDATE MEMBER 
+		   SET member_coupon = member_coupon + 1
+		 WHERE member_id = #{member_id}
+	</update>
+	
+	<update id="UpdateState" parameterType="map">
+		UPDATE SHOPPING_ORDER
+		<if test="state == 'buy'">
+			SET BUYSTATE = '구매확정'
+		</if>
+		<if test="state == 'exchange'">
+			SET BUYSTATE = '교환'
+		</if>
+		<if test="state == 'return'">
+			SET BUYSTATE = '반품'
+		</if>
+		WHERE ORDER_NUMBER = #{order_number}
+		AND PRODUCT_NO = #{product_no}
+	</update>
+	
+	<update id="updPoint" parameterType="map">
+		UPDATE MEMBER
+		SET MEMBER_POINT = MEMBER_POINT + #{point}
+		WHERE MEMBER_ID = #{member_id}
+	</update>
+	
+	
+</mapper>
