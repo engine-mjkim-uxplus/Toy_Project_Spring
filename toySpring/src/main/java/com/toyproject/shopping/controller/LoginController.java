@@ -31,7 +31,7 @@ public class LoginController{
 		return "loginform";
 	}
 	/**************** 로그인 요청(아이디 패스워드 확인) *****************/
-	@GetMapping("/login.do")
+	@GetMapping("/login")
 	public Object login(HttpServletRequest req, HttpServletResponse res) {
 		logger.info("LoginController => login/login.do 호출 ");
 		String msg= null;
