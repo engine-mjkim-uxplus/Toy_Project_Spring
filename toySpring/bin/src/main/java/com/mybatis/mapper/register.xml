@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.register">
+	<!-- 회원가입 -->
+	<insert id="registerInsert" parameterType="map">
+		INSERT INTO MEMBER (member_id, member_pw, member_name, member_phone, member_zipcode
+						  , member_address, member_address2, member_gender, member_coupon)
+     				VALUES (#{member_id}, #{member_pw}, #{member_name}, #{member_phone}, #{member_zipcode}
+     					  , #{member_address}, #{member_address2}, #{member_gender},0)
+	</insert>
+	<!-- ID중복체크 -->
+	<select id="registerSelect" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM MEMBER
+ 	 	 WHERE member_id = #{member_id}
+	</select>
+</mapper>

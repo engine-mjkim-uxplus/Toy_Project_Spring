@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.cart">
+	
+	<select id="getCartList" parameterType="String" resultType="com.vo.CartVO">
+		SELECT P.PRODUCT_CATEGORY,P.PRODUCT_NAME
+	           ,P.PRODUCT_PRICE,P.PRODUCT_IMG,P.PRODUCT_NO, C.PRODUCT_COUNT
+	           FROM PRODUCT P , 
+				(
+				SELECT PRODUCT_NO, PRODUCT_COUNT FROM CART 
+					WHERE MEMBER_ID= #{mem_id}
+				) C
+			WHERE P.PRODUCT_NO = C.PRODUCT_NO	
+	</select>
+	<!-- 멤버의 카트에 상품이 존재하는지 조회 -->
+	<select id="cartSearch" parameterType="Map" resultType="String">
+		SELECT 1 FROM CART WHERE MEMBER_ID= #{mem_id} AND PRODUCT_NO=#{product_no}
+	</select>
+	<!-- 카트에 상품이 존재하지 않는 경우 카트 새로 추가  -->
+	<select id="cartInsert" parameterType="Map">
+		INSERT INTO CART VALUES(CART_SEQ.NEXTVAL, #{product_no},#{mem_id}, #{product_count})
+	</select>
+	<!-- 카트에 기존 상품이 존재하는 경우 카트에 수량 변경 -->
+	<select id="cartUpdate" parameterType="Map">
+		UPDATE (
+              SELECT PRODUCT_COUNT FROM CART
+              WHERE MEMBER_ID = #{mem_id}
+                       AND PRODUCT_NO = #{product_no}
+               )
+            <if test='btn != null and btn.equals("minus")'>
+			SET PRODUCT_COUNT = PRODUCT_COUNT-1
+			</if>
+            <if test='btn != null and btn.equals("plus")'>
+			SET PRODUCT_COUNT = PRODUCT_COUNT+1
+			</if>
+			<if test='product_count gt 0'>
+			SET PRODUCT_COUNT = PRODUCT_COUNT + #{product_count}
+			</if>
+	</select>
+	
+	<select id="cartDelete" parameterType="Map">
+		DELETE CART
+            WHERE MEMBER_ID = #{mem_id}
+            AND PRODUCT_NO = #{product_no}
+	</select>	
+</mapper>

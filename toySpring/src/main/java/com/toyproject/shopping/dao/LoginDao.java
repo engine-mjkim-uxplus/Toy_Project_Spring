@@ -16,7 +16,7 @@ public class LoginDao {
 	// 물리적인 DB서버와 연결
 	
 	@Autowired
-	SqlSessionTemplate sqlSessionTemplate = null;
+	SqlSessionTemplate sqlSessionTemplate;
 
 	// 쿼리문의 아이디와 메소드 이름은 통일함
 	public String getId(Map<String, Object> pMap) {
