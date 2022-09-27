@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.order">
+	
+	<select id="searchIsCoupon" parameterType="String" resultType="Integer">
+		SELECT member_coupon FROM member WHERE member_id = #{mem_id}
+	</select>
+
+	<select id="getCouponList" parameterType="String" resultType="com.vo.CouponVO">
+		SELECT * FROM coupon WHERE
+               coupon_no in (
+               	SELECT coupon_no FROM coupon_zip
+                 WHERE member_id = #{mem_id}
+               )
+	</select>
+	<!-- 비회원 결제정보 저장  -->
+	<insert id="orderInsert" parameterType="Map">
+			INSERT ALL
+				<foreach item="item" collection="productList"> 
+                INTO UNMEMBER_ORDER
+                (
+	                product_no,order_price,order_count,order_date,order_name,order_address,
+	                order_address2,order_zipcode,order_phone,order_memo,order_number, buystate
+                )
+              	VALUES
+              	(
+              		#{item.product_no}, #{item.product_price}, #{item.product_count}, #{order_date}, #{name},
+		            #{address}, #{address2}, #{zipcode}, #{phone}, #{memo}, #{orderNumber}, #{buyState}
+		        )
+              </foreach>
+              SELECT 1 
+              FROM DUAL
+	</insert>
+	
+	<!-- 회원 결제정보 저장  -->
+	<insert id="orderMinsert" parameterType="Map">
+		INSERT ALL
+				<foreach item="item" collection="productList"> 
+                INTO SHOPPING_ORDER
+                (
+	                member_id,product_no,order_price,order_count,order_date,order_name,order_address,
+	                order_address2,order_zipcode,order_phone,order_memo,order_number, buystate
+                )
+              	VALUES
+              	(
+              		#{mem_id}, #{item.product_no}, #{item.product_price}, #{item.product_count}, #{order_date}, #{name},
+		            #{address}, #{address2}, #{zipcode}, #{phone}, #{memo}, #{orderNumber}, #{buyState}
+		        )
+              </foreach>
+              SELECT 1 
+              FROM DUAL
+	</insert>
+	
+	<!-- 결제 후 카트에서 상품 삭제 -->
+	<delete id="cartMdelete" parameterType="Map">
+		DELETE FROM CART
+            WHERE  MEMBER_ID = #{mem_id}
+		AND PRODUCT_NO IN 
+		<foreach item="item" collection="productList" open="(" close=")" separator=", ">
+			#{item.product_no}
+		</foreach>
+	</delete>
+	
+	<!-- 결제 후 쿠폰/포인트 업데이트 -->
+	<update id="orderMupdate" parameterType="Map">
+			UPDATE MEMBER SET
+		<choose>
+			<when test="coupon > 0">
+				    member_coupon = member_coupon -1,
+				    member_point = member_point - #{point}
+				    WHERE member_id = #{mem_id}
+			</when>
+			<when test="coupon == 0">
+				    member_point = member_point - #{point}
+				    WHERE member_id = #{mem_id}
+			</when>
+		</choose>
+	</update>
+	
+	<!-- 쿠폰 사용하였을 경우 coupon_zip에서 해당 아이디의 쿠폰 삭제 -->
+	<delete id="couponDelete" parameterType="Map">
+	DELETE FROM coupon_zip
+    	WHERE member_id = #{mem_id}
+       AND coupon_no = #{coupon}
+	</delete>	
+	
+	<select id="unMemberList" parameterType="map" resultType="map">
+			SELECT b.order_number, b.order_date, b.order_name, b.order_address, b.order_address2,b.order_zipcode, b.order_phone, b.order_memo,
+			a.product_name, a.product_img, b.order_count, b.order_price, b.buystate, a.product_no
+			FROM PRODUCT a , UNMEMBER_ORDER b
+			where a.product_no = b.product_no
+			<if test="order_number == null and order_phone == null">
+				and b.order_number = '1asv'
+			</if>
+			<if test="order_number != null">
+				and b.order_number = #{order_number}
+			</if>
+			<if test="order_phone != null">
+				and b.order_phone = #{order_phone}
+			</if>
+			order by b.order_date desc
+	</select>
+	
+	<update id="unmemberUpdateState" parameterType="map">
+		UPDATE UNMEMBER_ORDER
+		<if test="state == 'buy'">
+			SET BUYSTATE = '구매확정'
+		</if>
+		<if test="state == 'exchange'">
+			SET BUYSTATE = '교환'
+		</if>
+		<if test="state == 'return'">
+			SET BUYSTATE = '반품'
+		</if>
+		WHERE ORDER_NUMBER = #{order_number}
+		AND PRODUCT_NO = #{product_no}
+	</update>
+	
+</mapper>
