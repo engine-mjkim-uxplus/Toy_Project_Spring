@@ -5,15 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.toyproject.shopping.logic.LoginLogic;
 import com.util.HashMapBinder;
@@ -22,49 +25,51 @@ import com.util.HashMapBinder;
 @RequestMapping("/login")
 public class LoginController{
 	Logger logger = LoggerFactory.getLogger(LoginController.class);
-	LoginLogic loginLogic = new LoginLogic();
+	@Autowired
+	LoginLogic loginLogic;
 
 	/*********************** 로그인 페이지 요청 ***********************/
 	@GetMapping("/loginForm")
 	public String loginForm() {
-		logger.info("LoginController => login/loginForm.do 호출 ");
+		logger.info("LoginController => login/loginForm 호출 ");
 		return "loginform";
 	}
 	/**************** 로그인 요청(아이디 패스워드 확인) *****************/
-	@GetMapping("/login")
-	public Object login(HttpServletRequest req, HttpServletResponse res) {
-		logger.info("LoginController => login/login.do 호출 ");
+	@PostMapping("/login")
+	public Object login(HttpServletRequest req, Model m, RedirectAttributes rattr) {
+		logger.info("LoginController => login/login 호출 ");
 		String msg= null;
 		String mem_id = null;
 		HttpSession session = null;
 		String path = null;
-		ModelAndView mv = new ModelAndView();
 		Map<String,Object> pMap = new HashMap<>();
 		HashMapBinder hmb = new HashMapBinder(req);
 		hmb.bind(pMap);
 		mem_id = (String) loginLogic.login(pMap);
+		// 아이디가 없을 경우 예외 처리
 		if(mem_id == null) {
 			try {
 				msg =  URLEncoder.encode("id 또는 password가 일치하지 않습니다.", "utf-8");
+				rattr.addFlashAttribute("msg", msg);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-			path = "login/loginForm.do?msg=" + msg;
-		}else {
+			path = "redirect:/login/loginForm";
+		}
+		else {
 		session = req.getSession();
 		session.setAttribute("mem_id", mem_id);
-		path = "product/productList.do";
+		path = "redirect:/product/productList";
 		}
 		return path;
 	}
 	/************************** 로그아웃 요청 ****************************/
-	public Object logout(HttpServletRequest req, HttpServletResponse res) {
-		logger.info("LoginController => login/logout.do 호출 ");
+	@GetMapping("/logout")
+	public Object logout(HttpServletRequest req) {
+		logger.info("LoginController => login/logout 호출 ");
 		HttpSession session = req.getSession();
 		session.invalidate();
-		ModelAndView mv = new ModelAndView();
-		String path = "product/productList.do"; // redirect
-		return path;
+		return "redirect:product/productList";
 	}
 
 }

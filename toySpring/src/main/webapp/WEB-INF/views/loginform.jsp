@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Login V8</title>
+    <title>로그인 페이지</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />    
     <%@ include file="../../common/common.jsp" %>
@@ -35,13 +35,13 @@
               <div class="card-body p-5 text-center">
                 <div class="mb-md-5 mt-md-4 pb-5">
                   <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-                  	<c:if test="${not empty param.msg}">
+                  	<c:if test="${not empty msg}">
                   		<p class="text mb-5" style="color:red; font-size:20px;">
-    					 <i class="fa fa-exclamation-circle me-2"></i>${URLDecoder.decode(param.msg)}         	    
+    					 <i class="fa fa-exclamation-circle me-2"></i>${URLDecoder.decode(msg)}         	    
 	                 	</p>
 				    </c:if>   
                   <!-- ==================== Form 태그 시작 ==================== -->
-                  <form action="login" method="post"> 
+                  <form action='<c:url value='/login/login'/>' method="post"> 
                     <div class="form-outline form-black mb-4">
                       <label class="form-label" for="typeEmailX">ID</label>
                       <input

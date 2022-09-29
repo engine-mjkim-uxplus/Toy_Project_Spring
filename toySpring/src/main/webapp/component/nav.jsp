@@ -2,9 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!-- nav start -->
-<c:set var="loginOutLink" value="${sessionScope.mem_id == null ? '/login/loginForm.do' : '/login/logout.do' }"/>
+<c:set var="loginOutLink" value="${sessionScope.mem_id == null ? '/login/loginForm' : '/login/logout' }"/>
 <c:set var="loginOut" value="${sessionScope.mem_id == null ? '로그인' : '로그아웃' }"/>
-<c:set var="orderLink" value="${sessionScope.mem_id == null ?'javascript:pageMove()' :'/member/memberListPayment.do' }"/>
+<c:set var="orderLink" value="${sessionScope.mem_id == null ?'javascript:pageMove()' :'/member/memberListPayment' }"/>
 <nav
   class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-bottom border-secondary"
 >

@@ -22,12 +22,8 @@ public class LoginDao {
 	public String getId(Map<String, Object> pMap) {
 		String result = null;
 		logger.info("LoginDao ===> getId 호출 성공");
-		try {
-			result = sqlSessionTemplate.selectOne("getId", pMap);
-			logger.info("조회된 사용자 id는 " + result);
-		} catch (Exception e) {
-			logger.info("Exception : "+e.toString());
-		}
+		result = sqlSessionTemplate.selectOne("getId", pMap);
+		logger.info("조회된 사용자 id는 " + result);
 		return result;
 	}
 	

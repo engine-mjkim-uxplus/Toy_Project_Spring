@@ -11,15 +11,17 @@ import com.toyproject.shopping.dao.LoginDao;
 @Service
 public class LoginLogic {
 	Logger logger = LoggerFactory.getLogger(LoginLogic.class);
+	
 	@Autowired
 	LoginDao loginDao = null;
-	public Object login(Map<String, Object> pMap){
+	public String login(Map<String, Object> pMap){
 		logger.info("login 호출 성공");
 		String mem_id = null;
-		mem_id = loginDao.getId(pMap);
+		try {
+			mem_id = loginDao.getId(pMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return mem_id; 
 	}
-	
-	
-	
 }
