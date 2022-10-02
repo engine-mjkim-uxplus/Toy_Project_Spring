@@ -16,7 +16,7 @@
 			<value>jdbc:log4jdbc:oracle:thin:@127.0.0.1:1521:orcl11</value>
 		</property>
 		<property name="username">
-			<value>yuri</value>
+			<value>TOYPRJ</value>
 		</property>
 		<property name="password">
 			<value>tiger</value>
@@ -37,6 +37,7 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	<tx:annotation-driven/>
+	
 	<context:component-scan base-package="com.toyproject">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>

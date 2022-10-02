@@ -229,7 +229,7 @@
 		        	<c:set var= "total_price" value="${total_price + cart.getProduct_price()*cart.getProduct_count()}"/>
 				</c:forEach>
             <!-- 장바구니 아이템 목록 끝 -->
-          	<form  action="/order/orderList.do" method="POST">
+          	<form  action="/order/orderList" method="POST">
           	  <c:forEach var="cart" items="${cartList}">
   			  <input type="hidden" name="product_no" value="${cart.getProduct_no()}"/>
 	          <input type="hidden" name="product_name" value="${cart.getProduct_name()}"/>
@@ -283,7 +283,7 @@
 		            </section>
 		        	<c:set var= "total_price" value="${total_price + cart.getProduct_price()*cart.getProduct_count()}"/>
 				</c:forEach>
-          	<form  action="/order/orderList.do" method="POST">
+          	<form  action="/order/orderList" method="POST">
           	 <c:forEach var="cart" items="${sessionScope.cartList}">
   			  <input type="hidden" name="product_no" value="${cart.getProduct_no()}"/>
 	          <input type="hidden" name="product_name" value="${cart.getProduct_name()}"/>
@@ -313,15 +313,15 @@
     	function countChange(gubun, product_no, product_count){
     		if(gubun == "plus"){
     			alert("수량을 변경하였습니다");
-    			location.href=`cartUpdate.do?product_no=${'${product_no}'}&btn=plus`;
+    			location.href=`cartUpdate?product_no=${'${product_no}'}&btn=plus`;
     		} else{
     			alert("수량을 변경하였습니다");
-    			location.href=`cartUpdate.do?product_no=${'${product_no}'}&btn=minus`;
+    			location.href=`cartUpdate?product_no=${'${product_no}'}&btn=minus`;
     		}
     	}
     	function deleteItem(product_no){
     		alert("상품이 삭제 되었습니다.");
-    		location.href=`cartDelete.do?product_no=${'${product_no}'}`;
+    		location.href=`cartDelete?product_no=${'${product_no}'}`;
     	}
     </script>
   </body>
