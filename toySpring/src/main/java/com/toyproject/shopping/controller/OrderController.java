@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.toyproject.shopping.logic.MemberLogic;
@@ -30,19 +30,21 @@ import com.vo.MemberVO;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
+@Controller
 @RequestMapping("/order")
 public class OrderController {
 	
-	private final OrderLogic orderLogic;
-	@Autowired
+	OrderLogic orderLogic;
 	MemberLogic memberLogic;
 	
-	public OrderController(OrderLogic orderLogic) {
-		this.orderLogic = orderLogic;
+	@Autowired
+	public OrderController(OrderLogic orderLogic, MemberLogic memberLogic) {
+	  this.orderLogic = orderLogic;
+	  this.memberLogic = memberLogic;
 	}
 	
 	/*********************  주문 페이지(회원, 비회원) ********************/
-	@GetMapping("orderList")
+	@PostMapping("/orderList")
 	public String orderList(HttpServletRequest req, HttpSession session, Model m) {
 	String path = "";
 	HashMapBinder hmb = new HashMapBinder(req);
@@ -81,12 +83,12 @@ public class OrderController {
 		}
 		
 	}
-	String mem_id = (String)session.getAttribute("mem_id");
 	MemberVO member = null;
 	List<CouponVO> couponList = null;
 	
 	// 회원일 경우 회원테이블에서 주소 가져오기
 	if(loginCheck(session)) {
+	    String mem_id = (String)session.getAttribute("mem_id");
 		path = "memPayment";
 //		mv.setViewName("memPayment");
 		
@@ -106,10 +108,8 @@ public class OrderController {
 		else {
 			couponList = null;
 		}
-		return path;
 	// 비회원
 	} else if(loginCheck(session) == false) {
-	//	mv.setViewName("payment");
 		path="payment";
 	}
 	m.addAttribute("cartList", cartList);
@@ -118,10 +118,9 @@ public class OrderController {
 	
 	/*********************  결제 완료 (회원, 비회원) ********************/
 	@PostMapping("/orderInsert")
-	public Object orderInsert(HttpServletRequest req, HttpSession session, ModelAndView mv) {
+	public Object orderInsert(HttpServletRequest req, HttpSession session) {
 		HashMapBinder hmb = new HashMapBinder(req);
 		String mem_id = (String)session.getAttribute("mem_id");
-		session.removeAttribute(mem_id);
 		Map<String,Object> pMap = new HashMap<>();
 		hmb.bind(pMap);
 				
@@ -139,13 +138,11 @@ public class OrderController {
 		String resultUuid = uuid.toString().replaceAll("-", "");
 		orderNumber = strToday + resultUuid.substring(0,10);
 		String orderName = (String)pMap.get("name");
-		//mv.addObject("orderNumber", orderNumber);
-		//mv.addObject("name", (String)pMap.get("name"));
+		
 		pMap.put("orderNumber", orderNumber);
 		pMap.put("mem_id", mem_id);
 		pMap.put("buyState", "주문완료");
 		pMap.put("order_date", strToday2); // 테이블에 저장할 날짜(yyyy-mm-dd)
-		log.info(orderNumber);
 		
 		// 주문 관련
 		List<Map<String,Object>> productList = new ArrayList<>();
@@ -164,8 +161,7 @@ public class OrderController {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		mv.setViewName("sucessPayment");
-		path = "order/orderSucess.do?orderNumber="+ orderNumber + "&&name=" + orderName;
+		path = "redirect:/order/orderSucess?orderNumber="+ orderNumber + "&&name=" + orderName;
 		return path;
 	}
 	
@@ -193,14 +189,18 @@ public class OrderController {
 		productList.add(lMap);
 		pMap.put("productList", productList);
 		// 회원 결제
-		if(mem_id != null) {
+		if(loginCheck(session)) {
 			// 회원의 경우만 쿠폰, 포인트 사용
 			int coupon = Integer.valueOf((String)pMap.get("coupon"));
 			int point = Integer.valueOf((String)pMap.get("point"));
 			pMap.put("coupon", coupon);
 			pMap.put("point", point);
 			
-			orderLogic.memOrder(pMap);
+    	  try {
+            orderLogic.memOrder(pMap);
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
 		}
 		// 비회원 결제
 		else {
@@ -232,7 +232,7 @@ public class OrderController {
 			pMap.put("productList", productList);
 			
 			// 회원 결제
-			if(mem_id !=null) {
+			if(loginCheck(session)) {
 				// 회원의 경우만 쿠폰, 포인트 사용
 				int coupon = Integer.valueOf((String)pMap.get("coupon"));
 				int point = Integer.valueOf((String)pMap.get("point"));
@@ -251,6 +251,7 @@ public class OrderController {
 		}
 		
 	}
+	
 	@GetMapping("/orderUnmemberPage")
 	public Object orderUnmemberPage(HttpServletRequest req, Model m) {
 		log.info("OrderController => orderUnmemberPage 호출 ");
@@ -272,8 +273,7 @@ public class OrderController {
 		HashMapBinder hmb = new HashMapBinder(req);
 		hmb.bind(pMap);
 		
-		int result = 0;
-		result = orderLogic.orderUnmemberSelect(pMap);
+		orderLogic.orderUnmemberSelect(pMap);
 
 		return "order/orderUnmemberPage?order_number="+pMap.get("order_number");
 	}
