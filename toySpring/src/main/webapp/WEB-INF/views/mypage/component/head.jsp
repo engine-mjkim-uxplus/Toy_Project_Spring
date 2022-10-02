@@ -53,7 +53,7 @@
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-			<form name="updform"  role="search" action="./memberUpdateP.do" method="post" onsubmit="return changePW()">
+			<form name="updform"  role="search" action="./memberUpdateP" method="post" onsubmit="return changePW()">
 			 	<div class="box p-3">
 				 	<h5>변경할 비밀번호를 입력해주세요</h5>
 				    <hr />
