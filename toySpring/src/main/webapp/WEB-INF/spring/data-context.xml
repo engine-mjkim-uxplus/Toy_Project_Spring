@@ -13,13 +13,13 @@
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
 		<property name="jdbcUrl">
-			<value>jdbc:log4jdbc:oracle:thin:@127.0.0.1:1522:orcl11</value>
+			<value>jdbc:log4jdbc:oracle:thin:@127.0.0.1:1521:orcl11</value>
 		</property>
 		<property name="username">
 			<value>yuri</value>
 		</property>
 		<property name="password">
-			<value>111111</value>
+			<value>tiger</value>
 		</property>
 	</bean>
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">

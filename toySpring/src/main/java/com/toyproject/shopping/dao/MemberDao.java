@@ -199,70 +199,35 @@ public class MemberDao {
 		return orderList;
 	}
 
-	public void deleteCart(Map<String, Object> pMap) {
+	public void deleteCart(Map<String, Object> pMap) throws Exception {
 		logger.info("MemberDao: deleteCart 호출 성공");
-		int result = 0;
-		try {
-			result = sqlSessionTemplate.delete("delCart",pMap);
-			logger.info("result: "+ result);
-		} catch (Exception e) {
-			logger.info("Exception : " + e.toString());
-		} 
+		sqlSessionTemplate.delete("delCart",pMap);
 	}
 
-	public void deleteLike(Map<String, Object> pMap) {
+	public void deleteLike(Map<String, Object> pMap) throws Exception {
 		logger.info("MemberDao: deleteLike 호출 성공");
-		int result = 0;
-		try {
-			result = sqlSessionTemplate.delete("delLike",pMap);
-			logger.info("result: "+ result);
-		} catch (Exception e) {
-			logger.info("Exception : " + e.toString());
-		} 
+		sqlSessionTemplate.delete("delLike",pMap);
 	}
 
-	public void deleteReview(Map<String, Object> pMap) {
+	public void deleteReview(Map<String, Object> pMap) throws Exception {
 		logger.info("MemberDao: deleteReview 호출 성공");
-		int result = 0;
-		try {
-			result = sqlSessionTemplate.delete("delReview",pMap);
-			logger.info("result: "+ result);
-		} catch (Exception e) {
-			logger.info("Exception : " + e.toString());
-		} 
+		sqlSessionTemplate.delete("delReview",pMap);
 	}
 
-	public void deleteCoupon(Map<String, Object> pMap) {
+	public void deleteCoupon(Map<String, Object> pMap) throws Exception {
 		logger.info("MemberDao: deleteCoupon 호출 성공");
-		int result = 0;
-		try {
-			result = sqlSessionTemplate.delete("delCoupon",pMap);
-			logger.info("result: "+ result);
-		} catch (Exception e) {
-			logger.info("Exception : " + e.toString());
-		} 
+		sqlSessionTemplate.delete("delCoupon",pMap);
 	}
 
-	public void deleteOrder(Map<String, Object> pMap) {
+	public void deleteOrder(Map<String, Object> pMap) throws Exception {
 		logger.info("MemberDao: deleteOrder 호출 성공");
-		int result = 0;
-		try {
-			result = sqlSessionTemplate.delete("delOrder",pMap);
-			logger.info("result: "+ result);
-		} catch (Exception e) {
-			logger.info("Exception : " + e.toString());
-		} 
+		sqlSessionTemplate.delete("delOrder",pMap);
 	}
 
-	public int memberDelete(Map<String, Object> pMap) {
+	public int memberDelete(Map<String, Object> pMap) throws Exception {
 		logger.info("MemberDao: memberDelete 호출 성공");
 		int result = 0;
-		try {
-			result = sqlSessionTemplate.update("memberDelete",pMap);
-			logger.info("result: "+ result);
-		} catch (Exception e) {
-			logger.info("Exception : " + e.toString());
-		} 
+		result = sqlSessionTemplate.update("memberDelete",pMap);
 		return result;
 	}
 
