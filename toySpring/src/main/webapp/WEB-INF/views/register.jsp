@@ -74,7 +74,7 @@
   			if(!member_id){
   				alert('id를 입력하세요.');
   			} else {
-  				window.open("${contextPath}/register/registerSelect.do?member_id="+member_id,"","width=600px, height=450px")
+  				window.open("${contextPath}/register/registerSelect?member_id="+member_id,"","width=600px, height=450px")
   			}
   		}
   		
@@ -108,7 +108,7 @@
 	<%@ include file="../../component/nav.jsp" %>
     <!-- nav end -->
     <section class="h-100 h-custom gradient-custom-2">
-    <form action="./registerInsert.do" method="post" id="f_registerIns" name="userForm" onsubmit="return signUp()">
+    <form action="./registerInsert" method="post" id="f_registerIns" name="userForm" onsubmit="return signUp()">
       <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-12">

@@ -9,16 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.toyproject.shopping.logic.MemberLogic;
@@ -30,22 +30,27 @@ import com.vo.MemberVO;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
+@Controller
 @RequestMapping("/order")
 public class OrderController {
 	
+
 	private final OrderLogic orderLogic;
-  
-	@Autowired
-	MemberLogic memberLogic;
+	private final MemberLogic memberLogic;
 	
-	public OrderController(OrderLogic orderLogic) {
-		this.orderLogic = orderLogic;
+	@Autowired
+	public OrderController(OrderLogic orderLogic, MemberLogic memberLogic) {
+	  this.orderLogic = orderLogic;
+	  this.memberLogic = memberLogic;
 	}
 	
 	/*********************  주문 페이지(회원, 비회원) ********************/
-	@GetMapping("orderList")
-	public String orderList(@RequestParam Map<String,Object> pMap, ModelAndView mv) {
-	
+	@PostMapping("/orderList")
+	public String orderList(HttpServletRequest req, HttpSession session, Model m) {
+	String path = "";
+	HashMapBinder hmb = new HashMapBinder(req);
+	Map<String,Object> pMap = new HashMap<>();
+	hmb.bind(pMap);
 	// 상품이 한가지 품목만 넘어 왔을 경우, 여러 품목이 넘어 왔을 경우에 대해 분기처리
 	List cartList = new ArrayList();
 	CartVO cartVO = null;
@@ -79,18 +84,18 @@ public class OrderController {
 		}
 		
 	}
-	HttpSession session = req.getSession();
-	String mem_id = (String)session.getAttribute("mem_id");
 	MemberVO member = null;
 	List<CouponVO> couponList = null;
 	
 	// 회원일 경우 회원테이블에서 주소 가져오기
-	if(mem_id != null) {
-		mv.setViewName("memPayment");
+	if(loginCheck(session)) {
+	    String mem_id = (String)session.getAttribute("mem_id");
+		path = "memPayment";
+//		mv.setViewName("memPayment");
 		
 		member = new MemberVO();
 		member = memberLogic.Login(mem_id); // 멤버의 주소 및 휴대폰 번호
-		mv.addObject("member", member);
+		m.addAttribute("member", member);
 		
 		Map<String,Object> rMap = new HashMap(); // 결과값 받아올 Map
 		// 쿠폰 여부조회 및 쿠포정보 가져오기
@@ -98,29 +103,25 @@ public class OrderController {
 		
 		// 조회한 쿠폰 결과가 있으면 추가(List 자료형이면 결과값이 있는 것)
 		if((int)rMap.get("result") > 0 ) {
-			logger.info("Controller 쿠폰 => " + couponList);
-			mv.addObject("couponList",couponList);
-		} else {
+			log.info("Controller 쿠폰 => " + couponList);
+			m.addAttribute("couponList",couponList);
+		} 
+		else {
 			couponList = null;
 		}
-		
 	// 비회원
-	} else if(mem_id == null) {
-		mv.setViewName("payment");
-		
+	} else if(loginCheck(session) == false) {
+		path="payment";
 	}
-	mv.addObject("cartList", cartList);
-	return mv;
+	m.addAttribute("cartList", cartList);
+	return path;
 	}
 	
 	/*********************  결제 완료 (회원, 비회원) ********************/
 	@PostMapping("/orderInsert")
-	public Object orderInsert(HttpServletRequest req, ModelAndView mv) {
-		logger.info("OrderController => order/orderInsert.do 호출 ");
+	public Object orderInsert(HttpServletRequest req, HttpSession session) {
 		HashMapBinder hmb = new HashMapBinder(req);
-		HttpSession session = req.getSession();
 		String mem_id = (String)session.getAttribute("mem_id");
-		session.removeAttribute(mem_id);
 		Map<String,Object> pMap = new HashMap<>();
 		hmb.bind(pMap);
 				
@@ -138,13 +139,11 @@ public class OrderController {
 		String resultUuid = uuid.toString().replaceAll("-", "");
 		orderNumber = strToday + resultUuid.substring(0,10);
 		String orderName = (String)pMap.get("name");
-		//mv.addObject("orderNumber", orderNumber);
-		//mv.addObject("name", (String)pMap.get("name"));
+		
 		pMap.put("orderNumber", orderNumber);
 		pMap.put("mem_id", mem_id);
 		pMap.put("buyState", "주문완료");
 		pMap.put("order_date", strToday2); // 테이블에 저장할 날짜(yyyy-mm-dd)
-		logger.info(orderNumber);
 		
 		// 주문 관련
 		List<Map<String,Object>> productList = new ArrayList<>();
@@ -163,22 +162,20 @@ public class OrderController {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		mv.setViewName("sucessPayment");
-		path = "order/orderSucess.do?orderNumber="+ orderNumber + "&&name=" + orderName;
+		path = "redirect:/order/orderSucess?orderNumber="+ orderNumber + "&&name=" + orderName;
 		return path;
 	}
 	
 	/**************************결제 성공 페이지************************/
 	@GetMapping("/orderSucess")
 	public String orderSucess(HttpServletRequest req) {
-		logger.info("OrderController => order/orderSucess 호출");
 		return "sucessPayment";
 	}
 	
 	// 단건 상품 가공 메소드 (회원,비회원)
 	public void oneProductProcess (List<Map<String,Object>> productList,HashMap<String,Object> lMap,
 									Map<String,Object> pMap, String mem_id, HttpSession session) {
-		logger.info("상품의 종류가 하나 입니다");
+		log.info("상품의 종류가 하나 입니다");
 		
 		String product_name = (String)pMap.get("product_name");
 		String product_no = (String)pMap.get("product_no");
@@ -192,14 +189,18 @@ public class OrderController {
 		productList.add(lMap);
 		pMap.put("productList", productList);
 		// 회원 결제
-		if(mem_id != null) {
+		if(loginCheck(session)) {
 			// 회원의 경우만 쿠폰, 포인트 사용
 			int coupon = Integer.valueOf((String)pMap.get("coupon"));
 			int point = Integer.valueOf((String)pMap.get("point"));
 			pMap.put("coupon", coupon);
 			pMap.put("point", point);
 			
-			orderLogic.memOrder(pMap);
+    	  try {
+            orderLogic.memOrder(pMap);
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
 		}
 		// 비회원 결제
 		else {
@@ -210,7 +211,7 @@ public class OrderController {
 	// N건 상품 가공 메소드 (회원,비회원)
 	public void ManyProductProcess (List<Map<String,Object>> productList, HashMap<String,Object> lMap,
 									Map<String,Object> pMap, String mem_id,HttpSession session) {
-		logger.info("상품의 종류가 여러개 입니다");
+		log.info("상품의 종류가 여러개 입니다");
 		
 		try {
 			String[] product_name = (String[])pMap.get("product_name");
@@ -231,7 +232,7 @@ public class OrderController {
 			pMap.put("productList", productList);
 			
 			// 회원 결제
-			if(mem_id !=null) {
+			if(loginCheck(session)) {
 				// 회원의 경우만 쿠폰, 포인트 사용
 				int coupon = Integer.valueOf((String)pMap.get("coupon"));
 				int point = Integer.valueOf((String)pMap.get("point"));
@@ -250,9 +251,9 @@ public class OrderController {
 		}
 		
 	}
+	
 	@GetMapping("/orderUnmemberPage")
 	public Object orderUnmemberPage(HttpServletRequest req, Model m) {
-		logger.info("OrderController => orderUnmemberPage 호출 ");
 		
 		HashMapBinder hmb = new HashMapBinder(req);
 		Map<String,Object> pMap = new HashMap<String, Object>();
@@ -264,15 +265,13 @@ public class OrderController {
 		
 		return "unmember";
 	}
-	
+	@GetMapping("/orderUnmemberSelect")
 	public Object orderUnmemberSelect(HttpServletRequest req) {
-		logger.info("OrderController => orderUnmemberSelect 호출 ");
 		Map<String,Object> pMap = new HashMap<>();
 		HashMapBinder hmb = new HashMapBinder(req);
 		hmb.bind(pMap);
 		
-		int result = 0;
-		result = orderLogic.orderUnmemberSelect(pMap);
+		orderLogic.orderUnmemberSelect(pMap);
 
 		return "order/orderUnmemberPage?order_number="+pMap.get("order_number");
 	}

@@ -1,6 +1,5 @@
 package com.toyproject.shopping.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.toyproject.shopping.logic.MemberLogic;
-import com.util.HashMapBinder;
 import com.vo.CouponVO;
 import com.vo.MemberVO;
 import com.vo.ProductVO;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
 @RequestMapping("/member")
 public class MemberController {
@@ -29,18 +29,16 @@ public class MemberController {
 	@Autowired(required=false)
 	private MemberLogic memberLogic = null;
 	
+	/****************************** [[ 구매내역 ]] ******************************/
 	@GetMapping("/memberListPayment")
-	public Object memberListPayment(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("MemberController: memberListPayment 호출");
-		
+	public Object memberListPayment(@RequestParam Map<String,Object> pMap, HttpSession session, ModelAndView mav) {
 		String id = (String) session.getAttribute("mem_id");
 		pMap.put("member_id", id);
 		
 		Object path = null;
-		ModelAndView mav = new ModelAndView();
 		
 		if (id == null) {
-			path = "redirect:/login/loginForm";
+			path = "loginform";
 		}else {
 			MemberVO mVO = memberLogic.Login(id);
 			logger.info("ID :"+mVO.getMember_id()+", NAME: "+mVO.getMember_name());
@@ -56,19 +54,17 @@ public class MemberController {
 		return path;
 	}
 	
+	/****************************** [[ 작성한 리뷰 조회 ]] ******************************/
 	@GetMapping("/memberListReview")
-	public Object memberListReview(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("MemberController: memberListReview 호출");
-		
+	public Object memberListReview(@RequestParam Map<String,Object> pMap, HttpSession session, ModelAndView mav) {
 		String id = (String) session.getAttribute("mem_id");
 		logger.info(id);
 		
 		Object path = null;
 		List<Map<String,Object>> memberListReview = null;
-		ModelAndView mav = new ModelAndView();
 		
 		if (id == null) {
-			path = "redirect:/login/loginForm";
+			path = "loginform";
 		}else {
 			MemberVO mVO = memberLogic.Login(id);
 			logger.info("ID :"+mVO.getMember_id()+", NAME: "+mVO.getMember_name());
@@ -82,18 +78,16 @@ public class MemberController {
 		return path;
 	}
 	
+	/****************************** [[ 회원 정보 조회 ]] ******************************/
 	@GetMapping("/memberListP")
-	public Object memberListP(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("MemberController: memberListP 호출");
-
+	public Object memberListP(@RequestParam Map<String,Object> pMap, HttpSession session, ModelAndView mav) {
 		String id = (String) session.getAttribute("mem_id");
 		logger.info(id);
 		
 		Object path = null;
-		ModelAndView mav = new ModelAndView();
 		
 		if (id == null) {
-			path = "login/loginForm.do";
+			path = "loginform";
 		}else {
 			MemberVO mVO = memberLogic.Login(id);
 			logger.info("ID :"+mVO.getMember_id()+", NAME: "+mVO.getMember_name());
@@ -105,19 +99,17 @@ public class MemberController {
 		return path;
 	}
 	
+	/****************************** [[ 좋아요한 목록 조회 ]] ******************************/
 	@GetMapping("/memberListLike")
-	public Object memberListLike(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("MemberController: memberListLike 호출");
-		
+	public Object memberListLike(@RequestParam Map<String,Object> pMap, HttpSession session, ModelAndView mav) {
 		String id = (String) session.getAttribute("mem_id");
 		logger.info(id);
 		
 		Object path = null;
 		List<ProductVO> memberListLike = null;
-		ModelAndView mav = new ModelAndView();
 		
 		if (id == null) {
-			path = "login/loginForm.do";
+			path = "loginform";
 		}else {
 			MemberVO mVO = memberLogic.Login(id);
 			mav.addObject("member", mVO);
@@ -129,20 +121,18 @@ public class MemberController {
 		return path;
 	}
 
+	/****************************** [[ 쿠폰목록 조회 ]] ******************************/
 	@GetMapping("/memberListCoupon")
-	public Object memberListCoupon(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("MemberController: memberListCoupon 호출");
-
+	public Object memberListCoupon(@RequestParam Map<String,Object> pMap, HttpSession session, ModelAndView mav) {
 		String id = (String) session.getAttribute("mem_id");
 		logger.info(id);
 		
 		Object path = null;
 		List<CouponVO> memberListCoupon = null;
 		List<Integer> myCouponList = null;
-		ModelAndView mav = new ModelAndView();
 		
 		if (id == null) {
-			path = "login/loginForm.do";
+			path = "loginform";
 		}else {
 			MemberVO mVO = memberLogic.Login(id);
 			logger.info("ID :"+mVO.getMember_id()+", NAME: "+mVO.getMember_name());
@@ -157,77 +147,69 @@ public class MemberController {
 		return path;
 	}
 
+	/****************************** [[ 쿠폰 등록하기 ]] ******************************/
 	@PostMapping("/memberInsertCoupon")
-	public Object memberInsertCoupon(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("MemberController: memberInsertCoupon 호출");
+	public Object memberInsertCoupon(@RequestParam Map<String,Object> pMap, HttpSession session, ModelAndView mav) {
 		String id = (String) session.getAttribute("mem_id");
 		logger.info(id);
 		
 		Object path = null;
-		int result = 0;
-		List<CouponVO> couponList = null;
-		ModelAndView mav = new ModelAndView();
 		
 		if (id == null) {
-			path = "login/loginForm.do";
+			path = "loginform";
 		}else {
 			MemberVO mVO = memberLogic.Login(id);
 			logger.info("ID :"+mVO.getMember_id()+", NAME: "+mVO.getMember_name());
 			mav.addObject("member", mVO);
-			result = memberLogic.memberInsertCoupon(pMap);
+			memberLogic.memberInsertCoupon(pMap);
 			path = "redirect:memberListCoupon";
 		}
 		
 		return path;
 	}
 
-	/************************ [[ 회원정보 수정 ]] ************************/
-	@GetMapping("/memberUpdateP")
+	/****************************** [[ 회원정보 수정 ]] ******************************/
+	@PostMapping("/memberUpdateP")
 	public Object memberUpdateP(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("MemberController: memberUpdateP 호출");
 		String id = (String) session.getAttribute("mem_id");
 		logger.info(id);
 		
 		Object path = null;
-		ModelAndView mav = new ModelAndView();
 		
 		if (id == null) {
-			path = "login/loginForm.do";
+			path = "loginform";
 		}else {
-			int result = 0;
-			result = memberLogic.memberUpdateP(pMap); 
-			path = "member/memberListP.do";
+			memberLogic.memberUpdateP(pMap); 
+			path = "redirect:memberListP";
 		}
 		
 		return path;
 	}
 
+	/****************************** [[ 구매확정|교환|반품 상태 업데이트하기 ]] ******************************/
 	@GetMapping("/memberUpdateState")
 	public Object memberUpdateState(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		
-		int result = 0;
-		result = memberLogic.memberUpdateState(pMap);
-		
+		memberLogic.memberUpdateState(pMap);
 		return "redirect:memberListPayment";
 	}
 	
+	/****************************** [[ 회원탈퇴하기 ]] ******************************/
 	@PostMapping("/memberDelete")
 	public Object memberDelete(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("MemberController: memberDelete 호출");
 		String id = (String) session.getAttribute("mem_id");
 		logger.info(id);
 		
 		Object path = null;
 		
 		if (id == null) {
-			path = "login/loginForm.do";
+			path = "loginform";
 		}else {
 			int result = 0;
 			result = memberLogic.memberDelete(pMap); 
 			
 			if(result == 1) { // 회원 삭제된 경우 
 				session.invalidate(); // 세션 삭제 
-				path = "redirect:product/productList.do"; // 메인페이지로 이동한다. 
+				path = "redirect:/product/productList"; // 메인페이지로 이동한다. 
 			} else { // 회원탈퇴 실패한 경우 
 				path = "redirect:memberListP";
 			}

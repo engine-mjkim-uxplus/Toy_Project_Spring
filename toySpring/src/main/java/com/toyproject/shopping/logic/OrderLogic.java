@@ -3,14 +3,13 @@ package com.toyproject.shopping.logic;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.toyproject.shopping.dao.OrderDao;
 import com.vo.CouponVO;
-
+@Service
 public class OrderLogic {
 	Logger logger = LoggerFactory.getLogger(OrderLogic.class);
 	
@@ -21,6 +20,7 @@ public class OrderLogic {
 	}
 	
 	/****************** 멤버 쿠폰 조회(MemberLogig으로 옮겨야함)******************/
+	@Transactional(readOnly = true)
 	public List<CouponVO> memberCoupon(String mem_id, Map<String,Object> rMap) {
 		logger.info("OrderLogic => memberCoupon 호출");
 		rMap.clear();
@@ -45,7 +45,8 @@ public class OrderLogic {
 	}
 	
 	/****************** 주문 결제******************/
-	public void memOrder(Map<String, Object> pMap) {
+	@Transactional(rollbackFor = Exception.class)
+	public void memOrder(Map<String, Object> pMap) throws Exception{
 		logger.info("OrderLogic => memOrder 호출");
 		
 		int insertResult = 0;
@@ -55,56 +56,38 @@ public class OrderLogic {
 		int coupon = (Integer)pMap.get("coupon");
 		int point = (Integer)pMap.get("point");
 		// 1. shopping_order insert
-		insertResult = orderDao.orderMinsert(pMap);
+		orderDao.orderMinsert(pMap);
 		// 2. cart 에서 제거
-		cartDeleteResult = orderDao.cartMdelete(pMap);
+		orderDao.cartMdelete(pMap);
 		// 3. 쿠폰을 사용 하였거나 point를 사용 하였다면 Update
 		if(coupon > 0 || point > 0) {
-			mUpdateResult = orderDao.orderMupdate(pMap);
-			couponDeleteResult = orderDao.couponDelete(pMap);
-		}
-		// 트랜잭션 관련 
-		// 쿠폰을 사용하였을 경우
-		if(coupon > 0) {
-			if(insertResult > 0 && cartDeleteResult > 0 && mUpdateResult > 0 && couponDeleteResult > 0) {
-				OrderDao.sqlSession.commit();
-				OrderDao.sqlSession.close();
-			} else {
-				OrderDao.sqlSession.rollback();
-				OrderDao.sqlSession.close();
-			}
-		}
-		// 쿠폰을 사용하지 않았을 경우
-		else if(coupon == 0) {
-			if(insertResult > 0 && cartDeleteResult > 0 && mUpdateResult > 0 ) {
-				OrderDao.sqlSession.commit();
-				OrderDao.sqlSession.close();
-			} else {
-				OrderDao.sqlSession.rollback();
-				OrderDao.sqlSession.close();
-			}
+			orderDao.orderMupdate(pMap);
+			orderDao.couponDelete(pMap);
 		}
 	}
-
+	
+	@Transactional(rollbackFor = Exception.class)
 	public void noMemOrder(Map<String, Object> pMap) {
-		logger.info("OrderLogic => noMemOrder 호출");
-		int result = 0;
-		
-		result = orderDao.orderInsert(pMap);
+		logger.info("OrderLogic => noMemOrder 호출");		
+		try {
+          orderDao.orderInsert(pMap);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
 	}
-
+	
+	@Transactional(readOnly = true)
 	public List<Map<String, Object>> unmemberList(Map<String, Object> pMap) {
 		logger.info("OrderLogic => unmemberList 호출");
 		List<Map<String,Object>> unmemberList = null;
 		unmemberList = orderDao.unmemberList(pMap);
 		return unmemberList;
 	}
-
-	public int orderUnmemberSelect(Map<String, Object> pMap) {
+	
+	@Transactional
+	public void orderUnmemberSelect(Map<String, Object> pMap) {
 		logger.info("MemberLogic: orderUnmemberSelect 호출");
-		int result = 0;
-		result = orderDao.orderUnmemberSelect(pMap);
-		
-		return result;
+		orderDao.orderUnmemberSelect(pMap);		
+//		return result;
 	}
 }

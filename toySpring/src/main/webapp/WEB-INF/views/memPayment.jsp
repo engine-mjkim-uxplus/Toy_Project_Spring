@@ -279,7 +279,7 @@
     </header>
     <!-- 회원 주문 페이지 -->
     <c:set var ="total_price" value = "0" />
-    <form class="wrapper" name="paymentForm" id="paymentForm" action="./orderInsert.do" method="POST" >
+    <form class="wrapper" name="paymentForm" id="paymentForm" action="./orderInsert" method="POST" >
       <div class="h5 large">주문 결제</div>
       <div class="row">
         <div class="col-lg-8 col-md-8 col-sm-10 offset-lg-0 offset-md-2 offset-sm-1">

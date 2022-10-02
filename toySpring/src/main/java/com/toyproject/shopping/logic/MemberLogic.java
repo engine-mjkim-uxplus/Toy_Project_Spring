@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.toyproject.shopping.dao.MemberDao;
 import com.vo.CartVO;
@@ -62,36 +63,31 @@ public class MemberLogic {
 		return myCouponList;
 	}
 
-	public int memberInsertCoupon(Map<String, Object> pMap) {
+	public void memberInsertCoupon(Map<String, Object> pMap) {
 		logger.info("MemberLogic: memberInsertCoupon 호출");
 		int result = 0;
 		result = memberDao.memberInsertCoupon(pMap);
 		if(result > 0) {
 			memberDao.memberUpdateCoupon(pMap);
 		}
-		return result;
 	}
 
-	public int memberUpdateP(Map<String, Object> pMap) {
+	public void memberUpdateP(Map<String, Object> pMap) {
 		logger.info("MemberLogic: memberUpdateP 호출");
-		int result = 0;
-		result = memberDao.memberUpdateP(pMap);
-		return result;
+		memberDao.memberUpdateP(pMap);
 	}
 
-	public int memberUpdateState(Map<String, Object> pMap) {
+	public void memberUpdateState(Map<String, Object> pMap) {
 		logger.info("MemberLogic: memberUpdateState 호출");
-		int result = 0;
-		result = memberDao.memberUpdateState(pMap);
+		memberDao.memberUpdateState(pMap);
 		
 		if (pMap.get("state").equals("buy") ) {
 			logger.info("구매확정 선택");
 			memberDao.pointUpdate(pMap);
 		}
-		
-		return result;
 	}
-
+	/****************************** [[ 회원탈퇴시 트랜잭션 처리하기 ]] ******************************/
+	@Transactional(rollbackFor = Exception.class)
 	public int memberDelete(Map<String, Object> pMap) {
 		logger.info("MemberLogic: memberDelete 호출");
 		int result = 0;
@@ -113,25 +109,49 @@ public class MemberLogic {
 		pMap.put("orderList", orderList);
 		if(cartList.size() > 0 && cartList != null) {
 			logger.info("MemberLogic: 카트 삭제");
-			memberDao.deleteCart(pMap);
+			try {
+				memberDao.deleteCart(pMap);
+			} catch (Exception e) {
+				System.out.println("카트 삭제 도중 예외 발생: "+e.toString());
+			}
 		}
 		if(likeList.size() > 0 && cartList != null) {
 			logger.info("MemberLogic: 좋아요 삭제");
-			memberDao.deleteLike(pMap);
+			try {
+				memberDao.deleteLike(pMap);
+			} catch (Exception e) {
+				System.out.println("좋아요 삭제 도중 예외 발생: "+e.toString());
+			}
 		}
 		if(reviewList.size() > 0 && reviewList != null) {
 			logger.info("MemberLogic: 리뷰 삭제");
-			memberDao.deleteReview(pMap);
+			try {
+				memberDao.deleteReview(pMap);
+			} catch (Exception e) {
+				System.out.println("리뷰 삭제 도중 예외 발생: "+e.toString());
+			}
 		}
 		if(couponList.size() > 0 && couponList != null) {
 			logger.info("MemberLogic: 쿠폰 삭제");
-			memberDao.deleteCoupon(pMap);
+			try {
+				memberDao.deleteCoupon(pMap);
+			} catch (Exception e) {
+				System.out.println("쿠폰 삭제 도중 예외 발생: "+e.toString());
+			}
 		}
 		if(orderList.size() > 0 && orderList != null) {
 			logger.info("MemberLogic: 주문내역 삭제");
-			memberDao.deleteOrder(pMap);
+			try {
+				memberDao.deleteOrder(pMap);
+			} catch (Exception e) {
+				System.out.println("주문내역 삭제 도중 예외 발생: "+e.toString());
+			}
 		}
-		result = memberDao.memberDelete(pMap);
+		try {
+			result = memberDao.memberDelete(pMap);
+		} catch (Exception e) {
+			System.out.println("회원탈퇴 도중 예외 발생: "+e.toString());
+		}
 		return result;
 	}
 

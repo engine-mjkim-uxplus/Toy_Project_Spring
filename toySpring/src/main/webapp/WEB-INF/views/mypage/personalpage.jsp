@@ -162,7 +162,7 @@
 				<h5 class="font-medium mb-4">나의 정보</h5>
 				<div class="input-form-backgroud row">
 					<div class="input-form col-md-12 mx-auto">
-						<form class="validation-form" name="memForm" id="f_memform" method="get" action="./memberUpdateP.do">
+						<form class="validation-form" name="memForm" id="f_memform" method="post" action="./memberUpdateP">
 							<div class="row">
 								<div class="col-md-6 mb-3">
 									<label for="member_name">이름</label> 
@@ -260,7 +260,7 @@
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-			<form name="delform" role="search" action="./memberDelete.do" method="post" onsubmit="memDel()">
+			<form name="delform" role="search" action="./memberDelete" method="post" onsubmit="memDel()">
 			 	<div class="box p-3">
 				 	<h5>탈퇴를 원하시면 비밀번호를 입력해주세요</h3>
 				    <hr />
