@@ -63,34 +63,28 @@ public class MemberLogic {
 		return myCouponList;
 	}
 
-	public int memberInsertCoupon(Map<String, Object> pMap) {
+	public void memberInsertCoupon(Map<String, Object> pMap) {
 		logger.info("MemberLogic: memberInsertCoupon 호출");
 		int result = 0;
 		result = memberDao.memberInsertCoupon(pMap);
 		if(result > 0) {
 			memberDao.memberUpdateCoupon(pMap);
 		}
-		return result;
 	}
 
-	public int memberUpdateP(Map<String, Object> pMap) {
+	public void memberUpdateP(Map<String, Object> pMap) {
 		logger.info("MemberLogic: memberUpdateP 호출");
-		int result = 0;
-		result = memberDao.memberUpdateP(pMap);
-		return result;
+		memberDao.memberUpdateP(pMap);
 	}
 
-	public int memberUpdateState(Map<String, Object> pMap) {
+	public void memberUpdateState(Map<String, Object> pMap) {
 		logger.info("MemberLogic: memberUpdateState 호출");
-		int result = 0;
-		result = memberDao.memberUpdateState(pMap);
+		memberDao.memberUpdateState(pMap);
 		
 		if (pMap.get("state").equals("buy") ) {
 			logger.info("구매확정 선택");
 			memberDao.pointUpdate(pMap);
 		}
-		
-		return result;
 	}
 	/****************************** [[ 회원탈퇴시 트랜잭션 처리하기 ]] ******************************/
 	@Transactional(rollbackFor = Exception.class)

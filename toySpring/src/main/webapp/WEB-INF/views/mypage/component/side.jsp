@@ -10,19 +10,19 @@
 <c:set var="likepage" value="/WEB-INF/views/mypage/likepage.jsp" />
 
 <div class="col-md-2 listContainer list-group border-end border-secondary">
-  <a href="./memberListPayment.do" class="item list-group-item ${URL eq orderpage ? 'active' : 'none' }">
+  <a href="./memberListPayment" class="item list-group-item ${URL eq orderpage ? 'active' : 'none' }">
    <i class="far fa-comment-dots" style="margin-right: 5px;"></i>구매 내역
   </a>
-  <a href="./memberListReview.do" class="item list-group-item ${URL eq reviewpage ? 'active' : 'none' }">
+  <a href="./memberListReview" class="item list-group-item ${URL eq reviewpage ? 'active' : 'none' }">
    <i class="far fa-comment-dots" style="margin-right: 5px;"></i>구매 후기
   </a>
-  <a href="./memberListP.do" class="item list-group-item ${URL eq personal ? 'active' : 'none' }">
+  <a href="./memberListP" class="item list-group-item ${URL eq personal ? 'active' : 'none' }">
      <i class="far fa-comment-dots" style="margin-right: 5px;"></i>개인 정보 수정
   </a>
-  <a href="./memberListCoupon.do" class="item list-group-item ${URL eq couponpage ? 'active' : 'none' }">
+  <a href="./memberListCoupon" class="item list-group-item ${URL eq couponpage ? 'active' : 'none' }">
    <i class="far fa-comment-dots" style="margin-right: 5px;"></i>보유 쿠폰
   </a>
-  <a href="./memberListLike.do" class="item list-group-item ${URL eq likepage ? 'active' : 'none' }">
+  <a href="./memberListLike" class="item list-group-item ${URL eq likepage ? 'active' : 'none' }">
    <i class="far fa-comment-dots" style="margin-right: 5px;"></i>좋아요 리스트
   </a>
 </div>
