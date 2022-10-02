@@ -9,7 +9,7 @@
 	<!--  전체 상품페이지(홈페이지) 쿼리  -->
 	
 	<!-- 디테일 상품페이지 쿼리 -->
-	<select id="getProduct" parameterType="map" resultType="map">
+	<select id="getProduct" parameterType="map" resultType="com.vo.ProductVO">
 		SELECT * FROM PRODUCT WHERE product_no = #{product_no}
 	</select>
 	

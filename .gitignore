@@ -16,9 +16,8 @@ Servers/
 /target/
 /bin/
 .springBeans
-mybatis-config.xml
 /toySpring/target/
-
+/toySpring/src/main/webapp/WEB-INF/mybatis-config.xml
 
 # Mac
 .DS_Store
