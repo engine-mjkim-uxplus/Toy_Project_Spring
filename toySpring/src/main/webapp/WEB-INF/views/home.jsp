@@ -161,7 +161,7 @@
 			console.log("product_name = " + product_name);
  			let count = 1;
  			let url = "home";
-			location.href=`/cart/cartInsert.do?product_no=${'${product_no}'}
+			location.href=`/cart/cartInsert?product_no=${'${product_no}'}
 								&product_category=${'${product_category}'}&product_count=${'${count}'}
 								&product_img=${'${product_img}'}&product_price=${'${product_price}'}
 								&product_name=${'${product_name}'}&url=${'${url}'}

@@ -13,8 +13,12 @@ import com.vo.CouponVO;
 
 public class OrderLogic {
 	Logger logger = LoggerFactory.getLogger(OrderLogic.class);
-	@Autowired
-	OrderDao orderDao;
+	
+	private final OrderDao orderDao;
+	
+	public OrderLogic(OrderDao orderDao) {
+		this.orderDao = orderDao;
+	}
 	
 	/****************** 멤버 쿠폰 조회(MemberLogig으로 옮겨야함)******************/
 	public List<CouponVO> memberCoupon(String mem_id, Map<String,Object> rMap) {
