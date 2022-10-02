@@ -41,14 +41,12 @@ public class CartLogicTest {
 	@Test
 	public void cartDelete() throws Exception {
 		System.out.println("cartDelete() 테스트");
-		int result = 0;
 		int product_no = 107;
 		String mem_id = "mjey54";
 		Map<String,Object> pMap = new HashMap<>();
 		pMap.put("product_no",product_no);
 		pMap.put("mem_id",mem_id);
-		result = cartDao.cartDelete(pMap);
-		assertTrue(result > 0);
+		cartDao.cartDelete(pMap);
 	}
 	@Test
 	public void cartInsert() throws Exception {
