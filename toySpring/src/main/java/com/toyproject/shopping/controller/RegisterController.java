@@ -1,10 +1,7 @@
 package com.toyproject.shopping.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -18,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.toyproject.shopping.logic.RegisterLogic;
-import com.util.HashMapBinder;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
 @RequestMapping("/register")
 public class RegisterController {
@@ -27,31 +25,31 @@ public class RegisterController {
 	@Autowired(required=false)
 	private RegisterLogic registerLogic = null;
 	
+	/****************************** [[ 회원가입 페이지로 이동 ]] ******************************/
 	@GetMapping("/registerForm")
 	public String registerForm() {
-		logger.info("Controller의 registerForm 호출 성공");
 		return "register";
 	}
 	
+	/****************************** [[ 아이디 중복체크 ]] ******************************/
 	@GetMapping("/registerSelect")
-	public Object registerSelect(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		logger.info("Controller의 registerSelect 호출 성공");
+	public ModelAndView registerSelect(@RequestParam Map<String,Object> pMap, HttpSession session, ModelAndView mav) {
 		int result = 0;
-		ModelAndView mav = new ModelAndView();
 		result = registerLogic.registerSelect(pMap);
 		session.setAttribute("result", result);
 		mav.setViewName("idCheck");
 		return mav;
 	}
+
+	/****************************** [[ 회원가입 ]] ******************************/
 	@PostMapping("/registerInsert")
 	public Object registerInsert(@RequestParam Map<String,Object> pMap) {
-		logger.info("Controller의 registerInsert 호출 성공");
 		int result = 0;
 		String path = null;
 		result = registerLogic.registerInsert(pMap); 
 		logger.info("컨트롤러의 result: " +result);
 		if(result == 1) { // 회원가입 성공하면 Insert
-			path = "redirect:/login/loginForm";
+			path = "loginform"; //회원가입 성공시 로그인페이지로 이동
 		} else { 
 			path = "redirect:registerForm";
 		}
