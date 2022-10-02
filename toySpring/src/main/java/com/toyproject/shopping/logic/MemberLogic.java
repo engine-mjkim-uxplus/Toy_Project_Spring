@@ -92,6 +92,7 @@ public class MemberLogic {
 		
 		return result;
 	}
+	/****************************** [[ 회원탈퇴시 트랜잭션 처리하기 ]] ******************************/
 	@Transactional(rollbackFor = Exception.class)
 	public int memberDelete(Map<String, Object> pMap) {
 		logger.info("MemberLogic: memberDelete 호출");

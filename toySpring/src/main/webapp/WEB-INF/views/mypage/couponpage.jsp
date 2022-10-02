@@ -216,7 +216,7 @@
 				    	<h4 class="fw-bolder">✖️쿠폰 등록하기</h4>
 				    </div>
 				    <hr>
-				    <form action="./memberInsertCoupon.do" name="memberInsertCoupon" method="post" onsubmit="return memberInsertC()">
+				    <form action="./memberInsertCoupon" name="memberInsertCoupon" method="post" onsubmit="return memberInsertC()">
 					    <div class="mb-3">
 					    	<label class="mb-3">쿠폰 번호: </label>
 					    	<div class="row">
