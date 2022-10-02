@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.toyproject.shopping.logic.MemberLogic;
 import com.toyproject.shopping.logic.OrderLogic;
 import com.util.HashMapBinder;
 import com.vo.CartVO;
@@ -32,8 +34,9 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderController {
 	
 	private final OrderLogic orderLogic;
+  
 	@Autowired
-//	MemberLogic memberLogic;
+	MemberLogic memberLogic;
 	
 	public OrderController(OrderLogic orderLogic) {
 		this.orderLogic = orderLogic;
