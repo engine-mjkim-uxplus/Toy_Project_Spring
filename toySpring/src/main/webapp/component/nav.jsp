@@ -18,7 +18,7 @@
   </ul>
 
   <a
-    href="/product/productList.do"
+    href="/product/productListㅇ"
     class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
   >
     <h1>WORKSOUT</h1>
@@ -51,7 +51,7 @@
   <div class="modal-dialog">
     <div class="modal-content border border-secondary rounded-3 border-opacity-50">
       <div class="modal-body">
-       <form class="d-flex" role="search" action="productSearch.do" method="post">
+       <form class="d-flex" role="search" action="productSearch" method="post">
           <input name="search" type="search" class="form-control" placeholder="검색어를 입력하세요" aria-label="Search">
           <button type="submit" class="btn btn-warning" style="margin-left: 5px"><i class="fas fa-search"></i></button>
         </form>
@@ -74,7 +74,7 @@
       <div class="modal-body">
 	 	<main class="d-flex justify-content-center align-items-center" style="height: 200px">
 	 		<a href="${orderLink}" type="button" class="btn btn-primary btn-lg me-5">회원 주문내역</a>
-	 		<a href="/order/orderUnmemberPage.do" type="button" class="btn btn-danger btn-lg">비회원 주문내역</a>
+	 		<a href="/order/orderUnmemberPage" type="button" class="btn btn-danger btn-lg">비회원 주문내역</a>
 	 	</main>
       </div>
       <div class="modal-footer">
@@ -87,6 +87,6 @@
 <script>
 	function pageMove(){
 		alert('로그인이 필요합니다.');
-		location.href='/login/loginForm.do';
+		location.href='/login/loginForm';
 	}
 </script>

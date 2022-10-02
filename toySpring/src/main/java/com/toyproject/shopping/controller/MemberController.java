@@ -154,8 +154,6 @@ public class MemberController {
 		logger.info(id);
 		
 		Object path = null;
-		int result = 0;
-		List<CouponVO> couponList = null;
 		
 		if (id == null) {
 			path = "loginform";
@@ -163,7 +161,7 @@ public class MemberController {
 			MemberVO mVO = memberLogic.Login(id);
 			logger.info("ID :"+mVO.getMember_id()+", NAME: "+mVO.getMember_name());
 			mav.addObject("member", mVO);
-			result = memberLogic.memberInsertCoupon(pMap);
+			memberLogic.memberInsertCoupon(pMap);
 			path = "redirect:memberListCoupon";
 		}
 		
@@ -181,8 +179,7 @@ public class MemberController {
 		if (id == null) {
 			path = "loginform";
 		}else {
-			int result = 0;
-			result = memberLogic.memberUpdateP(pMap); 
+			memberLogic.memberUpdateP(pMap); 
 			path = "redirect:memberListP";
 		}
 		
@@ -192,8 +189,7 @@ public class MemberController {
 	/****************************** [[ 구매확정|교환|반품 상태 업데이트하기 ]] ******************************/
 	@GetMapping("/memberUpdateState")
 	public Object memberUpdateState(@RequestParam Map<String,Object> pMap, HttpSession session) {
-		int result = 0;
-		result = memberLogic.memberUpdateState(pMap);
+		memberLogic.memberUpdateState(pMap);
 		return "redirect:memberListPayment";
 	}
 	
