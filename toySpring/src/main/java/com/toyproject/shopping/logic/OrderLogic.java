@@ -45,7 +45,7 @@ public class OrderLogic {
 	}
 	
 	/****************** 주문 결제******************/
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void memOrder(Map<String, Object> pMap) throws Exception{
 		logger.info("OrderLogic => memOrder 호출");
 		
@@ -66,7 +66,7 @@ public class OrderLogic {
 		}
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void noMemOrder(Map<String, Object> pMap) {
 		logger.info("OrderLogic => noMemOrder 호출");		
 		try {

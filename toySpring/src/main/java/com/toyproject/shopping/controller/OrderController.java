@@ -168,7 +168,6 @@ public class OrderController {
 	/**************************결제 성공 페이지************************/
 	@GetMapping("/orderSucess")
 	public String orderSucess(HttpServletRequest req) {
-		log.info("OrderController => order/orderSucess 호출");
 		return "sucessPayment";
 	}
 	
@@ -254,7 +253,6 @@ public class OrderController {
 	
 	@GetMapping("/orderUnmemberPage")
 	public Object orderUnmemberPage(HttpServletRequest req, Model m) {
-		log.info("OrderController => orderUnmemberPage 호출 ");
 		
 		HashMapBinder hmb = new HashMapBinder(req);
 		Map<String,Object> pMap = new HashMap<String, Object>();
@@ -266,9 +264,8 @@ public class OrderController {
 		
 		return "unmember";
 	}
-	
+	@GetMapping("/orderUnmemberSelect")
 	public Object orderUnmemberSelect(HttpServletRequest req) {
-		log.info("OrderController => orderUnmemberSelect 호출 ");
 		Map<String,Object> pMap = new HashMap<>();
 		HashMapBinder hmb = new HashMapBinder(req);
 		hmb.bind(pMap);

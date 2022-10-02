@@ -44,14 +44,14 @@
 	<div class="text-center">
 		<!-- 비회원인 경우 -->
 		<c:if test="${ empty mem_id}">
-			<a class="btn btn-danger col-6" href="/order/orderUnmemberPage.do?order_number=${orderNumber}">주문내역 조회</a>
+			<a class="btn btn-danger col-6" href="/order/orderUnmemberPage?order_number=${orderNumber}">주문내역 조회</a>
 		</c:if>
 		
 		<!-- 회원인 경우 -->
 		<c:if test="${ !empty mem_id}">
-			<a class="btn btn-danger col-6" href="/member/memberListPayment.do">주문내역 조회</a>
+			<a class="btn btn-danger col-6" href="/member/memberListPayment">주문내역 조회</a>
 		</c:if>
-		<button class="btn btn-secondary col-6" onClick="location.href='/product/productList.do';">메인으로</button> 
+		<button class="btn btn-secondary col-6" onClick="location.href='/product/productList';">메인으로</button> 
 	</div>
 </section>
 <!-- footer -->
