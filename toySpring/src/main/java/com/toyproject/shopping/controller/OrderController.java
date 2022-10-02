@@ -9,10 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,28 +18,30 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.toyproject.shopping.logic.OrderLogic;
 import com.util.HashMapBinder;
 import com.vo.CartVO;
 import com.vo.CouponVO;
 import com.vo.MemberVO;
+
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @RequestMapping("/order")
 public class OrderController {
-	Logger logger = LoggerFactory.getLogger(OrderController.class);
-	@Autowired
-	OrderLogic orderLogic;
+	
+	private final OrderLogic orderLogic;
 	@Autowired
 //	MemberLogic memberLogic;
 	
+	public OrderController(OrderLogic orderLogic) {
+		this.orderLogic = orderLogic;
+	}
+	
 	/*********************  주문 페이지(회원, 비회원) ********************/
 	@GetMapping("orderList")
-	public Object orderList(HttpServletRequest req, ModelAndView mv) {
-	logger.info("OrderController => order/orderList 호출 ");
-	HashMapBinder hmb = new HashMapBinder(req);
-	Map<String,Object> pMap = new HashMap<>();
-	hmb.bind(pMap);
+	public String orderList(@RequestParam Map<String,Object> pMap, ModelAndView mv) {
 	
 	// 상품이 한가지 품목만 넘어 왔을 경우, 여러 품목이 넘어 왔을 경우에 대해 분기처리
 	List cartList = new ArrayList();
@@ -272,5 +272,10 @@ public class OrderController {
 		result = orderLogic.orderUnmemberSelect(pMap);
 
 		return "order/orderUnmemberPage?order_number="+pMap.get("order_number");
+	}
+	
+	/*****************로그인 체크(있으면 true, 없으면 false 리턴)*****************/
+	private boolean loginCheck(HttpSession session) {
+		return session.getAttribute("mem_id") != null;
 	}
 }

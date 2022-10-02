@@ -31,13 +31,13 @@
       </button>
     </li>
     <li class="nav-item">
-      <a href="/cart/cartList.do" class="nav-link px-2 text-muted">장바구니</a>
+      <a href="/cart/cartList" class="nav-link px-2 text-muted">장바구니</a>
     </li>
     <li class="nav-item">
       <button class="nav-link px-2 text-muted border-0" data-bs-toggle="modal" data-bs-target="#orderModal">주문내역</button>
     </li>
     <li class="nav-item">
-      <a href="/member/memberListPayment.do" class="nav-link px-2 text-muted">마이페이지</a>
+      <a href="/member/memberListPayment" class="nav-link px-2 text-muted">마이페이지</a>
     </li>
     <li class="nav-item">
       <a href="${loginOutLink}" class="nav-link px-2 text-muted">${loginOut}</a>
