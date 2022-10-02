@@ -65,4 +65,11 @@ public class ProductLogic {
 		
 		return rMap;
 	}
+	
+	/*********************** 상품 리뷰 추가 로직 ***********************/
+	public void productInsertReview(Map<String, Object> pMap) {
+		logger.info("ProductLogic: productInsertReview 호출");
+		productDao.InsertReview(pMap);
+		productDao.InsertReviewCount(pMap);
+	}
 }

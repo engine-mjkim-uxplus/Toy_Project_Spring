@@ -89,22 +89,36 @@
   			}
   		}
   		
-		function addLike(no,category){
-			let likeList = ${likeList == null ?[] :likeList};
+		function addLike(no){
 			
-			if (likeList.length === 0){
-				alert("로그인이 필요합니다.");
-				return;
+			const id = ${ !empty mem_id }
+			
+			const data = {
+					product_no:no,
+					mem_id:'${mem_id}',
 			}
 			
-			if(likeList.includes(no)){
-				if(confirm("이미 좋아요한 상품입니다. 취소하시겠습니까?")){
-					alert('좋아요가 취소됐습니다.');	
-					location.href = "./productDeleteLike.do?page=productDetail.do&product_no="+no+"&product_category="+category;
-				}
+			if(!id){
+				alert('로그인이 필요합니다.');
 			}else {
-				alert("좋아요를 눌렀습니다.");
-				location.href = "./productInsertLike.do?page=productDetail.do&product_no="+no+"&product_category="+category;
+				$.ajax({
+				    url: "productInsertLike",
+				    type: "POST",
+				    data: JSON.stringify(data),
+				    contentType: "application/json; charset=UTF-8",
+				    success : function(data) {
+				    	console.log(data);
+				    	if (data.success){
+				    		alert(data.msg);
+				    	}else{
+				    		alert(data.msg);
+				    	}
+				    }, 
+				    error : function(xhr, status, error){
+						alert("error");
+				    }
+			    });
+				
 			}
 		}
 		
@@ -311,7 +325,7 @@
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-			<form id="myform" enctype="multipart/form-data" role="search" action="productInsertReview.do" method="post">
+			<form id="myform" enctype="multipart/form-data" role="search" action="productInsertReview" method="post">
 				<fieldset>
 					<input type="radio" name="review_score" value="5" id="rate1">
 					<label for="rate1">

@@ -3,6 +3,7 @@ package com.toyproject.shopping.controller;
 import java.util.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.toyproject.shopping.logic.ProductLogic;
+import com.util.HashMapBinder;
 import com.vo.ProductVO;
 
 @Controller
@@ -61,4 +63,24 @@ public class ProductController {
 
 		return rMap;
 	}
+	
+	/*********************** 상품 리뷰 추가 요청 ***********************/
+	@PostMapping("/productInsertReview")
+	public String productInsertReview(HttpServletRequest req, Model model) {
+		logger.info("ProductController: productInsertReview 호출");
+		
+		Map<String,Object> pMap = new HashMap<>();
+		HashMapBinder hmb = new HashMapBinder(req);
+		hmb.multiBind(pMap);
+		
+		System.out.println("pMap==>"+pMap.toString());
+		
+		productLogic.productInsertReview(pMap);
+		String no = (String) pMap.get("product_no");
+		String category = (String) pMap.get("product_category");
+		
+		String path = "redirect:./productDetail?product_no="+no+"&product_category="+category;
+		return path;
+	}
+
 }

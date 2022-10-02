@@ -220,7 +220,7 @@
 				        <c:if test="${ item.getProduct_no() == 101 }">
 				        	<span class="product-discount-label">-20%</span>
 						</c:if>
-			            <a href="./productDetail.do?product_no=${item.getProduct_no()}&product_category=${item.getProduct_category()}" class="image">
+			            <a href="./productDetail?product_no=${item.getProduct_no()}&product_category=${item.getProduct_category()}" class="image">
 			              <img
 			                src="${item.getProduct_img()}"
 			              />
@@ -252,7 +252,7 @@
 						        <c:if test="${ item.getProduct_no() == 101 }">
 						        	<span class="product-discount-label">-20%</span>
 								</c:if>
-					            <a href="./productDetail.do?product_no=${item.getProduct_no()}&product_category=${item.getProduct_category()}" class="image">
+					            <a href="./productDetail?product_no=${item.getProduct_no()}&product_category=${item.getProduct_category()}" class="image">
 					              <img
 					                src="${item.getProduct_img()}"
 					              />
@@ -285,7 +285,7 @@
 						        <c:if test="${ item.getProduct_no() == 101 }">
 						        	<span class="product-discount-label">-20%</span>
 								</c:if>
-					            <a href="./productDetail.do?product_no=${item.getProduct_no()}&product_category=${item.getProduct_category()}" class="image">
+					            <a href="./productDetail?product_no=${item.getProduct_no()}&product_category=${item.getProduct_category()}" class="image">
 					              <img
 					                src="${item.getProduct_img()}"
 					              />
@@ -318,7 +318,7 @@
 						        <c:if test="${ item.getProduct_no() == 101 }">
 						        	<span class="product-discount-label">-20%</span>
 								</c:if>
-					            <a href="./productDetail.do?product_no=${item.getProduct_no()}&product_category=${item.getProduct_category()}" class="image">
+					            <a href="./productDetail?product_no=${item.getProduct_no()}&product_category=${item.getProduct_category()}" class="image">
 					              <img
 					                src="${item.getProduct_img()}"
 					              />

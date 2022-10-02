@@ -91,4 +91,16 @@ public class ProductDao {
 		sqlSessionTemplate.update("MemberLikeUpdate",pMap);
 	}
 
+	public void InsertReview(Map<String, Object> pMap) {
+		logger.info("ProductDao: InsertReview 호출 성공");
+		sqlSessionTemplate.update("InsertReview",pMap);
+	}
+	
+	public void InsertReviewCount(Map<String, Object> pMap) {
+		logger.info("ProductDao: InsertReviewCount 호출 성공");
+		sqlSessionTemplate.update("InsertReviewCount",pMap);
+
+	}
+
+
 }
