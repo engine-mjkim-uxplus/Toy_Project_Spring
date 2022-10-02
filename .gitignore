@@ -16,9 +16,8 @@ Servers/
 /target/
 /bin/
 .springBeans
-mybatis-config.xml
 /toySpring/target/
-
+data-context.xml
 
 # Mac
 .DS_Store
