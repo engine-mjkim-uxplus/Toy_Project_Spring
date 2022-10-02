@@ -2,6 +2,9 @@ package com.toyproject.shopping.controller;
 
 import java.util.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.toyproject.shopping.logic.ProductLogic;
 import com.vo.ProductVO;
@@ -24,11 +30,14 @@ public class ProductController {
 	ProductLogic productLogic;
 	
 	@GetMapping("/productList")
-	public String homePage(Model model) {
+	public String homePage(Model model, HttpSession session) {
 		
 		List<ProductVO> productList = null;
 		productList = productLogic.productList();
 		model.addAttribute("productList", productList);
+		
+		String id =(String) session.getAttribute("mem_id");
+		
 		
 		return "home";
 	}
@@ -43,4 +52,13 @@ public class ProductController {
 		return "detail";
 	}
 	
+	@PostMapping("/productInsertLike")
+	@ResponseBody
+	public Map<String,Object> addLike(@RequestBody Map<String,Object> pMap) {
+		logger.info("addLike 호출");
+		
+		Map<String,Object> rMap = productLogic.addLike(pMap);
+
+		return rMap;
+	}
 }

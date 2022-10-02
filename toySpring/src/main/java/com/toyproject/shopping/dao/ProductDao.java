@@ -68,4 +68,27 @@ public class ProductDao {
 		return reviewList;
 	}
 
+	public List<Integer> selectLikeList(Map<String, Object> pMap) {
+		List<Integer> result = null;
+		
+		System.out.println("selectLikeList==>"+pMap.toString());
+		try {
+			result = sqlSessionTemplate.selectList("likeList",pMap);
+		} catch (Exception e) {
+			logger.info("Exception : "+e.toString());
+		}
+		
+		return result;
+	}
+
+	public void addLike(Map<String, Object> pMap) {
+		logger.info("ProductDao : addLike 호출 성공");
+		sqlSessionTemplate.update("likeUpdate",pMap);
+	}
+	
+	public void MemberLikeUpdate(Map<String, Object> pMap) {
+		logger.info("ProductDao : MemberLikeUpdate 호출 성공");
+		sqlSessionTemplate.update("MemberLikeUpdate",pMap);
+	}
+
 }

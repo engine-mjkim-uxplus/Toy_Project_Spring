@@ -39,7 +39,7 @@
 	<!-- Product 공통 쿼리 좋아요 리스트 -->
 	<select id="likeList" parameterType="map" resultType="Integer">
 		SELECT PRODUCT_NO FROM PRODUCT_LIKE 
-		WHERE MEMBER_ID = #{member_id}
+		WHERE MEMBER_ID = #{mem_id}
 		ORDER BY PRODUCT_NO asc
 	</select>
 	<!-- Product 공통 쿼리 좋아요 리스트 -->
@@ -52,7 +52,7 @@
 	</update>
 	
 	<update id="MemberLikeUpdate" parameterType="map">
-		INSERT INTO PRODUCT_LIKE (MEMBER_ID, PRODUCT_NO) VALUES (#{member_id}, #{product_no})
+		INSERT INTO PRODUCT_LIKE (MEMBER_ID, PRODUCT_NO) VALUES (#{mem_id}, #{product_no})
 	</update>
 	<!-- 좋아요 추가 -->
 	

@@ -1,6 +1,7 @@
 package com.toyproject.shopping.logic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.toyproject.shopping.dao.ProductDao;
 import com.vo.ProductVO;
@@ -25,6 +27,7 @@ public class ProductLogic {
 		return productList;
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	public ProductVO productDetail(Map<String, Object> pMap) {
 		/* 사용자가 선택한 상품의 정보 */
 		ProductVO product = null;
@@ -42,5 +45,24 @@ public class ProductLogic {
 		product.setReviewList(reviewList);
 
 		return product;
+	}
+	
+
+	public Map<String, Object> addLike(Map<String, Object> pMap) {
+		Map<String,Object> rMap = new HashMap<>();
+		
+		List<Integer> result = productDao.selectLikeList(pMap);
+		
+		if(result.isEmpty() || !result.contains(pMap.get("product_no"))) {
+			productDao.addLike(pMap);
+			productDao.MemberLikeUpdate(pMap);
+			rMap.put("success", true);
+			rMap.put("msg", "좋아요가 등록됐습니다.");
+		}else {
+			rMap.put("success", false);
+			rMap.put("msg", "이미 좋아요를 누른 상품입니다.");
+		}
+		
+		return rMap;
 	}
 }

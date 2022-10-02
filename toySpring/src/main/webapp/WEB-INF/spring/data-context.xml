@@ -19,7 +19,7 @@
 			<value>yuri</value>
 		</property>
 		<property name="password">
-			<value>111111</value>
+			<value>tiger</value>
 		</property>
 	</bean>
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">

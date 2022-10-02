@@ -134,24 +134,39 @@
   </head>
   <body>
     <script type="text/javascript">
-		function addLike(no){			
-			let likeList = ${likeList == null ?[] :likeList};
+		function addLike(no){
 			
-			if (likeList.length === 0){
-				alert("로그인이 필요합니다.");
-				return;
+			const id = ${ !empty mem_id }
+			
+			const data = {
+					product_no:no,
+					mem_id:'${mem_id}',
 			}
 			
-			if(likeList.includes(no)){
-				if(confirm("이미 좋아요한 상품입니다. 취소하시겠습니까?")){
-					alert('좋아요가 취소됐습니다.');	
-					location.href = "./productDeleteLike.do?page=productList.do&product_no="+no
-				}
+			if(!id){
+				alert('로그인이 필요합니다.');
 			}else {
-				alert("좋아요를 눌렀습니다.");
-				location.href = "./productInsertLike.do?page=productList.do&product_no="+no
+				$.ajax({
+				    url: "productInsertLike",
+				    type: "POST",
+				    data: JSON.stringify(data),
+				    contentType: "application/json; charset=UTF-8",
+				    success : function(data) {
+				    	console.log(data);
+				    	if (data.success){
+				    		alert(data.msg);
+				    	}else{
+				    		alert(data.msg);
+				    	}
+				    }, 
+				    error : function(xhr, status, error){
+						alert("error");
+				    }
+			    });
+				
 			}
 		}
+		
 		function addCart(product_no, product_category,product_img,product_price, product_name){
 			alert("장바구니에 담았습니다.");
 			console.log("product_no = " + product_no);
