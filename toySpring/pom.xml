@@ -91,6 +91,12 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 		
+		<dependency>
+		   <groupId>com.oracle.database.jdbc</groupId>
+		   <artifactId>ojdbc6</artifactId>
+		   <version>11.2.0.4</version>
+		</dependency>
+		
 		<!-- myBatis-3.5.10 -->
 		<dependency>
 		    <groupId>org.mybatis</groupId>
@@ -233,6 +239,16 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>        
+		
+		<!-- JSON 컨버터  -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.13.3</version>
+		</dependency>
+
+		
 	</dependencies>
     <build>
         <plugins>

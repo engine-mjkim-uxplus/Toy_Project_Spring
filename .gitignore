@@ -17,7 +17,11 @@ Servers/
 /bin/
 .springBeans
 /toySpring/target/
+<<<<<<< HEAD
+/toySpring/src/main/webapp/WEB-INF/mybatis-config.xml
+=======
 data-context.xml
+>>>>>>> 443fc83dd1ce21a71cd54912ab922881de1d1cc5
 
 # Mac
 .DS_Store

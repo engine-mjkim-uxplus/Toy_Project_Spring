@@ -37,7 +37,6 @@ public class HashMapBinder {
 
 		System.out.println("realFolder :"+realFolder);
 
-
 		pMap.clear();
 		try {
 			multi = new MultipartRequest(req, realFolder, maxSize, encType, new DefaultFileRenamePolicy());
@@ -63,7 +62,6 @@ public class HashMapBinder {
 				if(filename !=null && filename.length()>1) {
 					file = new File(realFolder+"\\"+filename);
 				}
-				logger.info(file.toString());
 			}
 		}
 		logger.info(pMap.toString());

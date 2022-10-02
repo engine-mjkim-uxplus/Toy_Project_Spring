@@ -34,8 +34,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/order")
 public class OrderController {
 	
-	OrderLogic orderLogic;
-	MemberLogic memberLogic;
+
+	private final OrderLogic orderLogic;
+	private final MemberLogic memberLogic;
 	
 	@Autowired
 	public OrderController(OrderLogic orderLogic, MemberLogic memberLogic) {
