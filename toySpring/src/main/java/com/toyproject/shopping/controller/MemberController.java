@@ -211,7 +211,7 @@ public class MemberController {
 		return "redirect:memberListPayment";
 	}
 	
-	@GetMapping("/memberDelete")
+	@PostMapping("/memberDelete")
 	public Object memberDelete(@RequestParam Map<String,Object> pMap, HttpSession session) {
 		logger.info("MemberController: memberDelete 호출");
 		String id = (String) session.getAttribute("mem_id");
