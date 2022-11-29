@@ -10,6 +10,7 @@ POJO로 구현한 쇼핑몰 프로젝트를 **Spring**으로 이관해 본다.
 2022.09.19 ~ 2022.09.25
 
 ## ⚒️사용기술 및 개발환경
+
 * Java 11
 * JavaScript ES6
 * HTML5
@@ -21,6 +22,9 @@ POJO로 구현한 쇼핑몰 프로젝트를 **Spring**으로 이관해 본다.
 * Visual Studio Code
 * Spring 5.0.7
 * Apache Tomcat 9
+
+![image](https://user-images.githubusercontent.com/104042566/204467404-54fc7ab9-1a2d-4cb1-9e78-55bb54abc5e9.png)
+
 
 ## 🏠메인화면
 ![home](https://user-images.githubusercontent.com/104042566/204463119-52664a8e-b458-4271-8fda-e409e056fcbe.jpg)
