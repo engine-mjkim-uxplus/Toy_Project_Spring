@@ -30,3 +30,9 @@ POJO로 구현한 쇼핑몰 프로젝트를 **Spring**으로 이관해 본다.
 
 ## 👤마이페이지
 ![image](https://user-images.githubusercontent.com/104042566/204463846-c09f1f82-79d0-4fb5-8bc7-d7d16c24b91d.png)
+
+## 🛒장바구니
+![image](https://user-images.githubusercontent.com/104042566/204464575-480288f0-e4d0-4a6f-9f97-ae176f586d96.png)
+
+## 💳결제페이지
+![image](https://user-images.githubusercontent.com/104042566/204464787-4ff55f47-ee49-46ab-b6c8-305c80f32ab2.png)
